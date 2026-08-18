@@ -3,6 +3,13 @@
 CV-based waste classification + PostGIS spatial matching + route optimization,
 end to end in Django.
 
+## 🚀 Features
+
+- **CV-based classification**: YOLOv8 model detects organic, recyclable, or e-waste from uploaded images.
+- **Spatial facility matching**: PostGIS queries find the nearest suitable waste facility.
+- **Smart routing**: OSRM for point-to-point routes; OR-Tools VRP solver for multi-stop optimization.
+- **Interactive dashboard**: Leaflet map frontend with GeoJSON API for requests, facilities, and routes.
+
 ```
 Upload Image → YOLO classifier → organic / recyclable / e-waste
       → PostGIS spatial query → nearest suitable facility
@@ -99,16 +106,5 @@ until real weights exist at `YOLO_MODEL_PATH`. To train:
 3. Copy the resulting `best.pt` to `ml_models/waste_classifier.pt`
 4. Update `CLASS_MAP` in `ml_model.py` to match your dataset's class names
 
-## 5. Merging your existing Django work
 
-If you already built part of this (e.g. the classification upload flow),
-drop your app's `models.py`/`views.py` alongside these and reconcile the
-model fields — the rest of the pipeline (`facilities`, `routing`, `dashboard`)
-only depends on `WasteRequest` having `location` (PointField) and `waste_class`.
 
-## 6. Notes / next steps
-
-- Move YOLO inference to a background task (Celery + Redis) for production
-- `OSRM_BASE_URL` defaults to the public demo server — self-host OSRM for reliability/scale
-- `vrp_solver.py` is ready but not yet wired into a view — hook it up when you want
-  to batch multiple pending requests into one optimized pickup route
